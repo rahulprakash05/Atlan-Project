@@ -7,7 +7,7 @@ This repository contains the Kubernetes manifests and deployment steps for an e-
 3. Database: MongoDB cluster.
 4. Message Queue: RabbitMQ for asynchronous order processing.
 
-# Pre-requisites
+# Prerequisites
  1. Kubernetes cluster - v 1.26 or higher
  2. Installed helm 
  
@@ -278,8 +278,8 @@ Step 4: Install Filebeat for Log Collection: (collect logs from Kubernetes pods 
         spec:
            containers:
            - name: filebeat
-           volumeMounts:
-           - name: filebeat-config
+             volumeMounts:
+             - name: filebeat-config
              mountPath: /usr/share/filebeat/filebeat.yml
              subPath: filebeat.yml
            volumes:
@@ -299,6 +299,35 @@ Step 5: Verify ELK Stack Setup
         In the Discover tab, you should be able to see the logs collected from your Kubernetes components
 
 
+### 2. Autoscaling
+Step 1: Horizontal Pod Autoscaling (HPA)
+
+Horizontal Pod Autoscaling (HPA) scales the number of pods in your deployment based on resource metrics such as CPU or memory usage. Here's how to implement it for your frontend (Nginx) and backend (Node.js) services.
+
+- Prerequisites
+    - Metrics Server: Ensure that the Metrics Server is installed in your cluster, as HPA relies on it to collect CPU and memory usage metrics.
+    - Install Metrics Server:
+        
+        kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+
+    - Verify that Metrics Server is running
+        
+        kubectl get apiservices | grep metrics
+
+1. Create HPA for Frontend (Nginx)
+        - Deploy the Frontend Application: Ensure that your frontend (Nginx) service is deployed in Kubernetes.
+        - Create an HPA for Nginx: Define an HPA for the Nginx deployment based on CPU usage.
+
+        kubectl autoscale deployment frontend-nginx \ --cpu-percent=50 \ --min=2 \ --max=10
+
+        - Check the status of the HPA
+
+                kubectl get hpa
+
+
+Step 2: Cluster Autoscaling
+- Prerequisites for Cluster Autoscaler
+        - Ensure that your Kubernetes cluster is deployed on a cloud platform that supports Cluster Autoscaler for example AWS cloud
 
 
 
