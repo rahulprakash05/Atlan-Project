@@ -198,8 +198,9 @@ Step 3: Monitor Gatekeeper
                 MongoDB: 1860
                 RabbitMQ: 9961
                 
-
-
+#### 2. Logging Setup (ELK)
+Step 1: Install Elasticsearch (Elasticsearch will serve as the data store for logs collected from your Kubernetes components.)
+- Install Elasticsearch using Helm
 
         
 
