@@ -66,6 +66,38 @@ Step 2: Configure Nginx Ingress for front-end
 - Apply rabbit-deployment-service.yaml file:
     #kubectl apply -f rabbit-deployment-service.yaml
   
+### 4. Security and Compliance
+step 1. Install Gatekeeper
+    - Run the following command to install Gatekeeper:
+    #kubectl apply -f https://raw.githubusercontent.com/open-policy-agent/gatekeeper/master/deploy/gatekeeper.yaml
+
+Step 2: Create Security Policies with Gatekeeper
+    1: Enforcing Non-Root User Policy
+        - config file is under gatekeeper "kubernetes/gatekeeper/Enforcing Non-Root User Policy"
+        - Apply both 'non-root-user-enforcement.yaml' & 'non-root-user-template.yaml' files
+        - #kubectl apply -f non-root-user-template.yaml
+        - #kubectl apply -f non-root-user-enforcement.yaml
+
+    2: Deny Privileged Containers
+        - config file is under gatekeeper "kubernetes/gatekeeper/Deny Privileged Containers"
+        - Apply both 'privileged-container-template.yaml' & 'deny-privileged-containers.yaml' files
+        - #kubectl apply -f privileged-container-template.yaml
+        - #kubectl apply -f deny-privileged-containers.yaml
+
+    3: Disable Privilege Escalation
+        - config file is under gatekeeper "kubernetes/gatekeeper/Disable Privilege Escalation"
+        - Apply both 'no-allow-privilege-escalation-template.yaml' & 'deny-privilege-escalation.yaml' files
+        - #kubectl apply -f no-allow-privilege-escalation-template.yaml
+        - #kubectl apply -f deny-privilege-escalation.yaml
+
+Step 4: Monitor Gatekeeper
+        - Check the status of policies using:
+        - #kubectl get constraints -- #This will list the active constraints and any violations.
+
+
+
+
+
 
 
 
