@@ -162,6 +162,43 @@ Step 3: Monitor Gatekeeper
         - Go to Status > Targets in the Prometheus UI. 
         - Here, you should see all your targets.
 
+- Install Grafana
+        - Install Grafana using Helm:
+
+        helm install grafana grafana/grafana --namespace monitoring
+
+        - Get Grafana service details:
+
+        kubectl get svc -n monitoring
+
+        - Note down the external IP of the Grafana service. Access grafana through web UI
+
+- Login to Grafana:
+        - Default credentials:
+                - Username: admin
+                - Password: admin (Change this after login)
+
+- Configure Prometheus as a Data Source in Grafana
+        - Open Grafana → Configuration → Data Sources → Add data source.
+
+        - Select Prometheus.
+
+        - Set the URL as:
+
+                http://prometheus-server.monitoring.svc.cluster.local
+
+- Click Save & Test.
+
+- Set up Dashboards
+        - Import pre-built dashboards for Kubernetes, Node.js, MongoDB, and RabbitMQ in Grafana.
+        - Go to Dashboards → Import.
+        - Enter the Dashboard IDs for the components:
+                
+                Kubernetes: 315
+                MongoDB: 1860
+                RabbitMQ: 9961
+                
+
 
 
         
