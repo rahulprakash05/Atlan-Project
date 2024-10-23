@@ -98,17 +98,16 @@ Step 2: Configure Nginx Ingress for front-end
         kubectl apply -f rabbit-deployment-service.yaml
   
 ### 4. Security and Compliance
-<<<<<<< HEAD
+
 step 1. Install Gatekeeper
     - Run the following command to install Gatekeeper:
 
             kubectl apply -f https://raw.githubusercontent.com/open-policy-agent/gatekeeper/master/deploy/gatekeeper.yaml
-=======
 
 Step 1: Install Gatekeeper
         - Run the following command to install Gatekeeper:
-        - #kubectl apply -f https://raw.githubusercontent.com/open-policy-agent/gatekeeper/master/deploy/gatekeeper.yaml
->>>>>>> 041271cf606045d090406ba2333ccb109c6ea67d
+        
+          kubectl apply -f https://raw.githubusercontent.com/open-policy-agent/gatekeeper/master/deploy/gatekeeper.yam
 
 Step 2: Create Security Policies with Gatekeeper
 
