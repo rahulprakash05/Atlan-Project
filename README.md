@@ -151,6 +151,17 @@ Step 3: Monitor Gatekeeper
             helm repo update
 
             helm install prometheus prometheus-community/prometheus --namespace monitoring --create-namespace
+        
+-   Verify Scrape Targets
+
+        kubectl get svc -n monitoring
+
+-   Get prometheus serviceIP and port
+-   Access Prometheus at http://<IP-address>:9090
+-   Check Targets:
+        - Go to Status > Targets in the Prometheus UI. 
+        - Here, you should see all your targets.
+
 
 
         
