@@ -1,4 +1,5 @@
 # Atlan-Project
+
 # E-commerce Kubernetes Deployment
 This repository contains the Kubernetes manifests and deployment steps for an e-commerce application consisting of the following components:
 1. Frontend: React app served by Nginx.
@@ -10,26 +11,7 @@ This repository contains the Kubernetes manifests and deployment steps for an e-
 
 ### 1. Configuration and Deployment
 -  create kubernetes manifest file for each component and apply them.
-  
-#### Step 1: Frontend (Nginx + React)
-- Define a Deployment and Service for the Nginx server that serves the React app.
-- # E-commerce Kubernetes Deployment
-
-This repository contains the Kubernetes manifests and deployment steps for an e-commerce application consisting of the following components:
-
-- **Frontend**: React app served by Nginx.
-- **Backend**: Node.js microservices.
-- **Database**: MongoDB cluster.
-- **Message Queue**: RabbitMQ for asynchronous order processing.
-
----
-
-## Phase 1: Deployment
-
-### 1. Configuration and Deployment
-
-We will create Kubernetes manifests (YAML files) for each component and apply them to the cluster.
-
+ 
 #### Step 1: Frontend (Nginx + React)
 - Kubernetes front-end deployment had been defined in the **"front-end-deployment.yaml"**
 - Apply the manifest:
@@ -89,3 +71,7 @@ Step 2: Configure Nginx Ingress for front-end
 
 
   
+
+
+
+
