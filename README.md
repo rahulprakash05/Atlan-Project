@@ -212,8 +212,91 @@ Step 1: Install Elasticsearch (Elasticsearch will serve as the data store for lo
         kubectl get svc -n logging
 
 
+Step 2: Install Kibana
+- Install Kibana using Helm
+
+        helm install kibana elastic/kibana --namespace logging
+
+- Kibana config file is in monitoring-logging/kibana
+- Apply the config file
+
+        kubectl apply -f kibana-lb.yaml
+
+- Now access Kibana at http://<IP-Address>:5601
 
 
+Step 3: Install Logstash
+-  Install Logstash using Helm
+
+        helm install logstash elastic/logstash --namespace logging  #Install logstash in your kubernetes cluster
+
+- Configure Logstash Pipeline
+        - Create a ConfigMap to define the Logstash pipeline
+        - Apply the ConfigMap: monitoring-logging/logstash-pipeline-configmap.yaml
+
+                kubectl apply -f logstash-pipeline-configmap.yaml
+
+- Modify Logstash Deployment: To mount the logstash-pipeline config     
+        
+        kubectl edit deployment logstash -n logging
+
+- In the Logstash deployment YAML, add the following
+        
+        spec:
+           containers:
+           - name: logstash
+           args:
+           - "-f"
+           - "/usr/share/logstash/pipeline/logstash.conf"
+           volumeMounts:
+           - name: logstash-pipeline
+           mountPath: /usr/share/logstash/pipeline/logstash.conf
+           subPath: logstash.conf
+           volumes:
+           - name: logstash-pipeline
+           configMap:
+              name: logstash-pipeline
+
+
+Step 4: Install Filebeat for Log Collection: (collect logs from Kubernetes pods and send them to Logstash)
+- Install Filebeat using Helm
+
+        helm install filebeat elastic/filebeat --namespace logging
+
+- Filebeat config file is in monitoring-logging/filebeat-config.yaml
+
+- Apply the ConfigMap
+
+        kubectl apply -f filebeat-config.yaml
+
+- Update Filebeat DaemonSet
+
+        kubectl edit daemonset filebeat -n logging
+
+- Add the following volume and volumeMounts to the filebeat container
+
+        spec:
+           containers:
+           - name: filebeat
+           volumeMounts:
+           - name: filebeat-config
+             mountPath: /usr/share/filebeat/filebeat.yml
+             subPath: filebeat.yml
+          volumes:
+          - name: filebeat-config
+          configMap:
+             name: filebeat-config
+
+
+Step 5: Verify ELK Stack Setup
+- Access Kibana: http://<EXTERNAL-IP>:5601
+
+- Set Up Kibana Index Pattern
+        - In Kibana:
+
+        Go to Management → Index Patterns → Create Index Pattern.
+        Create a new index pattern for your logs: kubernetes-logs-*.
+        In the Discover tab, you should be able to see the logs collected from your Kubernetes components
 
 
 
