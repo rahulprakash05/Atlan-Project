@@ -282,9 +282,9 @@ Step 4: Install Filebeat for Log Collection: (collect logs from Kubernetes pods 
            - name: filebeat-config
              mountPath: /usr/share/filebeat/filebeat.yml
              subPath: filebeat.yml
-          volumes:
-          - name: filebeat-config
-          configMap:
+           volumes:
+           - name: filebeat-config
+           configMap:
              name: filebeat-config
 
 
