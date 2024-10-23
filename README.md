@@ -326,8 +326,60 @@ Horizontal Pod Autoscaling (HPA) scales the number of pods in your deployment ba
 
 
 Step 2: Cluster Autoscaling
+
 - Prerequisites for Cluster Autoscaler
         - Ensure that your Kubernetes cluster is deployed on a cloud platform that supports Cluster Autoscaler for example AWS cloud
+        - AWS IAM permissions for the Cluster Autoscaler 
+
+1. Install Cluster Autoscaler using helm: 
+
+        helm repo add autoscaler https://kubernetes.github.io/autoscaler
+        helm repo update
+        helm install cluster-autoscaler autoscaler/cluster-autoscaler \ --namespace kube-system \ --set cloudProvider=aws
+
+
+2. Configure Cluster Autoscaler: Add the necessary configurations, such as the node group name and scaling options.
+
+        kubectl edit deployment cluster-autoscaler -n kube-system
+
+- In the deployment spec, add these environment variables:
+
+        spec:
+           containers:
+           - name: cluster-autoscaler
+             env:
+             - name: AWS_REGION
+               value: <your-aws-region>
+             - name: ASG_NAME
+               value: <your-eks-node-group>
+             - name: SCALE_DOWN_ENABLED
+               value: "true"
+
+3.  Set Autoscaling Limits:
+        Set the minimum and maximum number of nodes for the node group in AWS cloud provider console
+        - Min Nodes: 2
+        - Max Nodes: 10
+
+
+Step 3: Verify and Monitor Autoscaling
+
+- Verify Horizontal Pod Autoscaling (HPA)
+        
+        kubectl get hpa
+
+- Monitor Cluster Autoscaling
+ 
+        kubectl get nodes
+
+- Monitor the Cluster Autoscaler logs
+         
+        kubectl logs -f deployment/cluster-autoscaler -n kube-system
+
+- HPA for Backend (Node.js): Autoscale based on CPU usage, with 3-15 replicas.
+
+        kubectl autoscale deployment backend-nodejs --cpu-percent=60 --min=3 --max=15
+
+
 
 
 
