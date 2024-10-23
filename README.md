@@ -202,7 +202,16 @@ Step 3: Monitor Gatekeeper
 Step 1: Install Elasticsearch (Elasticsearch will serve as the data store for logs collected from your Kubernetes components.)
 - Install Elasticsearch using Helm
 
-        
+        helm repo add elastic https://helm.elastic.co   #Add the Elastic Helm chart repository
+        helm repo update
+        helm install elasticsearch elastic/elasticsearch --namespace logging --create-namespace   #Install Elasticsearch using the Helm chart
+
+- Verify the installation
+
+        kubectl get pods -n logging
+        kubectl get svc -n logging
+
+
 
 
 
