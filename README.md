@@ -73,6 +73,7 @@ Step 1: Install Gatekeeper
         - #kubectl apply -f https://raw.githubusercontent.com/open-policy-agent/gatekeeper/master/deploy/gatekeeper.yaml
 
 Step 2: Create Security Policies with Gatekeeper
+
     1: Enforcing Non-Root User Policy
         - config file is under gatekeeper "kubernetes/gatekeeper/Enforcing Non-Root User Policy"
         - Apply both 'non-root-user-enforcement.yaml' & 'non-root-user-template.yaml' files
