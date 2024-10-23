@@ -143,16 +143,14 @@ Step 3: Monitor Gatekeeper
 ### 1. Monitoring and Logging:
 
 #### 1. Monitoring Setup (Prometheus & Grafana)
-- Install the monitoring and logging tools using the helm charts
-
-    1. Install Prometheus (Helm-based Installation)
+-   Install Prometheus (Helm-based Installation) 
     - Run the following commands
     
-        helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-      
-        helm repo update
-      
-        helm install prometheus prometheus-community/prometheus --namespace monitoring --create-namespace
+            helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+
+            helm repo update
+
+            helm install prometheus prometheus-community/prometheus --namespace monitoring --create-namespace
 
 
         
