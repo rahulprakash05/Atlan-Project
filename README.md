@@ -320,10 +320,20 @@ Horizontal Pod Autoscaling (HPA) scales the number of pods in your deployment ba
      - Deploy the Frontend Application: Ensure that your frontend (Nginx) service is deployed in Kubernetes.
      - Create an HPA for Nginx: Define an HPA for the Nginx deployment based on CPU usage.
 
-        kubectl autoscale deployment frontend-nginx \ --cpu-percent=50 \ --min=2 \ --max=10
+                kubectl autoscale deployment frontend-nginx \ --cpu-percent=50 \ --min=2 \ --max=10
 
 
      - Check the status of the HPA
+
+                kubectl get hpa
+
+2.  Create HPA for Backend (Node.js)
+        - Deploy the Backend Application: Ensure that the backend (Node.js) service is deployed.
+        - Define an HPA for the backend service.
+
+                kubectl autoscale deployment backend-nodejs \ --cpu-percent=60 \ --min=3 \ --max=15
+
+        - Monitor HPA: 
 
                 kubectl get hpa
 
@@ -331,7 +341,49 @@ Horizontal Pod Autoscaling (HPA) scales the number of pods in your deployment ba
 Step 2: Cluster Autoscaling
 - Prerequisites for Cluster Autoscaler
         - Ensure that your Kubernetes cluster is deployed on a cloud platform that supports Cluster Autoscaler for example AWS cloud
+        - Set up IAM permissions for the Cluster Autoscaler
 
+1. Install Cluster Autoscaler using Helm: 
+
+        helm repo add autoscaler https://kubernetes.github.io/autoscaler
+        helm repo update
+        helm install cluster-autoscaler autoscaler/cluster-autoscaler \ --namespace kube-system \ --set cloudProvider=aws
+
+2. Configure Cluster Autoscaler
+
+        kubectl edit deployment cluster-autoscaler -n kube-system
+
+- In the deployment spec, add the following environment variables: To work with your EKS node group
+
+        spec:
+           containers:
+            - name: cluster-autoscaler
+              env:
+                - name: AWS_REGION
+                  value: <your-aws-region>
+                - name: ASG_NAME
+                  value: <your-eks-node-group>
+                - name: SCALE_DOWN_ENABLED
+                  value: "true"
+
+3. Set Autoscaling Limits
+        
+        Min Nodes: 2
+        Max Nodes: 10
+
+Step 3: Verify and Monitor Autoscaling
+
+1. Verify Horizontal Pod Autoscaling (HPA): simulate the cpu usage load using kubctl run command 
+
+        kubectl get hpa  #check the status of HPA
+
+2. Monitor Cluster Autoscaling
+
+        kubectl get nodes
+
+3. Monitor the Cluster Autoscaler logs
+
+        kubectl logs -f deployment/cluster-autoscaler -n kube-system
 
 
 
