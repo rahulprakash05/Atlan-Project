@@ -315,12 +315,13 @@ Horizontal Pod Autoscaling (HPA) scales the number of pods in your deployment ba
         kubectl get apiservices | grep metrics
 
 1. Create HPA for Frontend (Nginx)
-        - Deploy the Frontend Application: Ensure that your frontend (Nginx) service is deployed in Kubernetes.
-        - Create an HPA for Nginx: Define an HPA for the Nginx deployment based on CPU usage.
+     - Deploy the Frontend Application: Ensure that your frontend (Nginx) service is deployed in Kubernetes.
+     - Create an HPA for Nginx: Define an HPA for the Nginx deployment based on CPU usage.
 
         kubectl autoscale deployment frontend-nginx \ --cpu-percent=50 \ --min=2 \ --max=10
 
-        - Check the status of the HPA
+
+     - Check the status of the HPA
 
                 kubectl get hpa
 
