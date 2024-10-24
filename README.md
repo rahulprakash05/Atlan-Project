@@ -307,8 +307,10 @@ Horizontal Pod Autoscaling (HPA) scales the number of pods in your deployment ba
 - Prerequisites
     - Metrics Server: Ensure that the Metrics Server is installed in your cluster, as HPA relies on it to collect CPU and memory usage metrics.
     - Install Metrics Server:
+
         
         kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+
 
     - Verify that Metrics Server is running
         
