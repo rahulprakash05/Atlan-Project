@@ -1,0 +1,43 @@
+Frontend accessibility issues arises due to networking and misconfiguration in ingress
+
+Steps to follow to troubleshoot this issue:
+
+1. Check Frontend Service Status
+
+    kubectl get svc -n <namespace>  #To ensure the service type using eithher loadbalancer (if exposed externally) or clusterIP (if using ingress controller)
+
+2. Verify the Ingress Resource: Check the Ingress resource for the frontend by running
+
+    kubectl get ingress -n <namespace>  #Confirm that the host, paths, and service backend are correctly defined
+
+
+3. Inspect Ingress Controller Logs: 
+
+    kubectl logs -n ingress-nginx -l app.kubernetes.io/name=ingress-nginx
+
+- Look for any errors related to the routing or backend connection issues.
+
+4. Check DNS Configuration: 
+    - Ensure domain (example.com) resolves to the correct external IP of the LoadBalancer (if using an external LoadBalancer service).
+
+    kubectl get svc -n ingress-nginx  #Check the external IP status, and verify it's exposed and reachable.
+
+
+5. Loadbalancer issue: If using a LoadBalancer service type, ensure the load balancer is correctly provisioned and properly linked.
+
+    kubectl describe svc frontend-service -n <namespace>  #Check the external IP status and verify it's exposed and reachable.
+
+6. Check Firewall Rules (Security Groups)
+    - Ensure that the necessary firewall rules or security groups allow external traffic on ports 80/443.
+
+
+7.  Test Connectivity: Test the connection to the frontend service internally using
+
+    curl <frontend-service-cluster-ip>:<port>  #If it’s reachable internally the issue is likely at the ingress or external access level.
+
+8. Cross-Check Network Policies: Ensure there are no Network Policies restricting traffic between the frontend service, ingress, or external users
+
+    kubectl get networkpolicy -n <namespace>
+    
+
+- Following these steps we can identify the accessibility issues and troubleshoot it accordingly
