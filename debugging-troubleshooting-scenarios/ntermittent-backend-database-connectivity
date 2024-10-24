@@ -1,0 +1,73 @@
+Q. **Intermittent Backend-Database Connectivity**:
+    - Issue: The backend services occasionally lose connection to the MongoDB cluster, causing request failures.
+    - Task: Investigate and resolve potential causes such as network policies, service discovery issues, or MongoDB configuration.
+
+- The potential root causes such as network policies, service discovery problems, and MongoDB configuration are the reasons for this issue. 
+
+1. Check MongoDB and Backend Service Logs
+    - Inspect the logs of both MongoDB and the backend services to identify any specific error messages or patterns that could give clues 
+
+        kubectl logs -f <backend-pod> -n <namespace>
+        kubectl logs -f <mongodb-pod> -n <namespace>
+    
+    - Look for Connection timeouts, Connection refused errors, Network partition issues.
+
+
+2. Ensure that the backend services are using the correct MongoDB connection string
+
+    - kind: Secret
+      metadata:
+        name: mongodb-credentials
+      data: 
+        mongodb-uri: mongodb://username:password@mongodb-service.namespace.svc.cluster.local:27017/dbname    #ensure it is correct
+
+    - Make sure the MongoDB service name and port are correct
+
+3. Inspect Kubernetes Network Policies
+    - confirm that they allow traffic between the backend services and the MongoDB pods
+
+        kubectl get networkpolicy -n <namespace>
+
+    - Review the policies to ensure there are no rules inadvertently blocking traffic between the backend and database.
+
+4. Service Discovery and DNS Resolution
+    - Verify that the backend service is able to resolve the MongoDB service DNS name
+
+        kubectl exec -it <backend-pod-name> -- nslookup mongodb-service.namespace.svc.cluster.local
+    
+    - If there's an issue with DNS resolution then restart the CoreDNS pods
+
+        kubectl rollout restart deployment coredns -n kube-system
+
+5. Test Backend Connectivity to MongoDB Internally
+
+        kubectl exec -it <backend-pod> -- curl mongodb-service.namespace.svc.cluster.local:27017
+
+    - if connection fails intermittently this could point to either a network issue or load on MongoDB
+
+6. Inspect MongoDB Performance
+    - If data base is experiencing high load it could result in dropped connections 
+    - Check for any resource bottlenecks (CPU, memory)
+    - Check MongoDB replica set health (if using replication).
+    - Monitor MongoDB logs for signs of over-utilization
+    - Ensure MongoDB pods have sufficient CPU and memory requests/limits in place
+
+7. Persistent Volume Issues
+    - Ensure that there are no issues with the underlying storage system 
+
+        kubectl get pv
+        kubectl describe pv <pv-name>
+
+8. Increase connection Pool Size
+    - If your backend services have a high number of concurrent requests then increase MongoDB connection pool size to ensure it can handle multiple requests
+
+    mongoose.connect(process.env.MONGO_URI, {
+    poolSize: 20   // Set the number of connections in the pool
+    });
+
+9. Network and Latency Checks
+    - Run network diagnostics tools like ping, traceroute, or mtr between pods.
+
+        kubectl exec -it <backend-pod> -- ping mongodb-service.namespace.svc.cluster.local
+
+    - Check for any network latency or packet loss issues in your Kubernetes cluster

@@ -1,4 +1,8 @@
-Frontend accessibility issues arises due to networking and misconfiguration in ingress
+Q. **Frontend Accessibility**:
+    - Issue: The frontend service is not accessible externally post-deployment.
+    - Task: Diagnose the networking and Ingress configuration, ensuring the frontend is reachable and performs as expected.
+
+- Frontend accessibility issues arises due to networking and misconfiguration in ingress
 
 Steps to follow to troubleshoot this issue:
 
@@ -38,6 +42,6 @@ Steps to follow to troubleshoot this issue:
 8. Cross-Check Network Policies: Ensure there are no Network Policies restricting traffic between the frontend service, ingress, or external users
 
     kubectl get networkpolicy -n <namespace>
-    
+
 
 - Following these steps we can identify the accessibility issues and troubleshoot it accordingly
