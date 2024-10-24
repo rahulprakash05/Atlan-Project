@@ -71,3 +71,6 @@ Q. **Intermittent Backend-Database Connectivity**:
         kubectl exec -it <backend-pod> -- ping mongodb-service.namespace.svc.cluster.local
 
     - Check for any network latency or packet loss issues in your Kubernetes cluster
+
+
+This steps helps in diagnozing the issue and resolving it. 

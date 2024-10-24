@@ -1,0 +1,99 @@
+3. **Order Processing Delays**:
+    - Issue: Users report delays in order processing, suspecting issues with the RabbitMQ message queue.
+    - Task: Analyze and optimize the message queue setup, ensuring efficient message processing and minimal latency.
+
+
+To address order processing delays suspected to be caused by issues with the RabbitMQ message queue, we need to analyze the current setup and optimize it for efficient message handling. Follow the steps below -
+
+1. Check RabbitMQ and Application Logs
+    - Inspect RabbitMQ logs for any errors or warnings that may indicate issues with message delivery, connection timeouts, resource constraints
+
+        kubectl logs -f <rabbitmq-pod> -n <namespace>
+
+    - check the backend services that are publishing or consuming messages from RabbitMQ
+
+        kubectl logs -f <backend-pod> -n <namespace>
+
+    - Look for patterns such as: Connection drops or timeouts, Consumer errors, Messages piling up in the queues (high message count)
+
+2. Monitor RabbitMQ Queue Length and Message Throughput
+    - Large unacknowledged messages could indicate that consumers are not processing messages fast enough or that there's a bottleneck in message delivery.
+
+    - This can be done either via the RabbitMQ Management UI or using the rabbitmqctl tool.
+
+    - If using the UI, navigate to Queues and check the message count and message rate.
+
+    - If using rabbitmqctl
+
+        rabbitmqctl list_queues name messages_ready messages_unacknowledged
+
+
+3. Optimize Consumer Throughput
+    - If the backend is slow in processing the messages from the queue then optimize the cosumer configuration.
+    - This includes tunning the prefetch count.
+    - Example in Node.js
+        channel.prefetch(10);  // Fetch up to 10 messages at a time
+
+4. Scale the backend services
+    - Scale services which are consuming from RabbitMQ
+    - Leverage HPA for this. Criteria either CPU or Memory utilization
+
+5. Ensure adequate RabbitMQ resources 
+    - such as CPU and memory resources 
+    - Check resource usage 
+
+        kubectl top pod <rabbitmq-pod> -n <namespace>
+    
+    - If resource usage is high, increase the request and limits in the RabbitMQ deployment.
+
+ 
+6. Increase Max connection limits: 
+    - Edit RabbitMQ conf file to increase limits
+
+        # rabbitmq.conf
+        listeners.tcp.default = 5672
+        total_connections = 5000
+        max_channels_per_connection = 1000
+
+    - Prevent message accumulation by setting appropriate TTL (TIme-To-Live)
+
+        rabbitmqctl set_policy TTL ".*" '{"message-ttl":60000}' --apply-to queues
+
+7. Network Latency and Bandwidth
+    - Ensure that RabbitMQ and the backend are within the same Kubernetes cluster or have low-latency network connections.
+    - Test network performance between RabbitMQ and the backend using tools like ping or iperf
+
+        kubectl exec -it <backend-pod> -- ping rabbitmq-service.namespace.svc.cluster.local
+
+
+8. RabbitMQ High Availability (HA) and Clustering
+    - If the load is high, set up RabbitMQ clustering to distribute the load across multiple RabbitMQ nodes.
+    - Ensure that RabbitMQ is deployed as a statefulset with multiple replicas and proper HA configuration to ensure failover and high availability in case of pod failure
+    - Example RabbitMQ StatefulSet configuration
+
+        apiVersion: apps/v1
+        kind: StatefulSet
+        metadata:
+            name: rabbitmq
+        spec:
+            replicas: 3
+            serviceName: rabbitmq
+            selector:
+                matchLabels:
+                    app: rabbitmq
+            template:
+                metadata:
+                    labels:
+                        app: rabbitmq
+            spec:
+                containers:
+                - name: rabbitmq
+                image: rabbitmq:3-management
+                ports:
+                - containerPort: 5672
+
+
+9. If message load is too high to handle for a single RabbitMQ instance then consider usign RabbitMQ Shovel or RabbitMQ Federation to distribute messages across multiple RabbitMQ instances or clusters.
+
+
+- These steps helps in diagnosing as well as resolving the issue.
