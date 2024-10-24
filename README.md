@@ -350,26 +350,10 @@ Step 2: Cluster Autoscaling
         helm install cluster-autoscaler autoscaler/cluster-autoscaler \ --namespace kube-system \ --set cloudProvider=aws
 
 2. Configure Cluster Autoscaler
+        - Cluster autoscaler config file is in Autoscaling/cluster-autoscaler-deployment.yaml
+        - Apply the Autoscaling/cluster-autoscaler-deployment.yaml
 
-        kubectl edit deployment cluster-autoscaler -n kube-system
-
-- In the deployment spec, add the following environment variables: To work with your EKS node group
-
-        spec:
-           containers:
-            - name: cluster-autoscaler
-              env:
-                - name: AWS_REGION
-                  value: <your-aws-region>
-                - name: ASG_NAME
-                  value: <your-eks-node-group>
-                - name: SCALE_DOWN_ENABLED
-                  value: "true"
-
-3. Set Autoscaling Limits
-        
-        Min Nodes: 2
-        Max Nodes: 10
+                kubectl apply -f Autoscaling/cluster-autoscaler-deployment.yaml
 
 Step 3: Verify and Monitor Autoscaling
 
