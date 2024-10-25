@@ -17,24 +17,12 @@ spec:
         image: rabbitmq:3-management
         ports:
         - containerPort: 5672
-        - containerPort: 15672
+        - containerPort: 15672  
         volumeMounts:
         - name: rabbitmq-storage
           mountPath: /var/lib/rabbitmq
-  volumes:
-  - name: rabbitmq-storage
-    persistentVolumeClaim:
-      claimName: rabbitmq-pvc
-
----
-
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: rabbitmq-pvc
-spec:
-  accessModes: ["ReadWriteOnce"]
-  resources:
-    requests:
-      storage: 5Gi
+      volumes:
+      - name: rabbitmq-storage
+        persistentVolumeClaim:
+          claimName: rabbitmq-pvc
 

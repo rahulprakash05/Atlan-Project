@@ -1,10 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  creationTimestamp: null
+  name: backend
   labels:
     app: backend
-  name: backend
 spec:
   replicas: 3
   selector:
@@ -17,7 +16,6 @@ spec:
       maxSurge: 1
   template:
     metadata:
-      creationTimestamp: null
       labels:
         app: backend
     spec:
