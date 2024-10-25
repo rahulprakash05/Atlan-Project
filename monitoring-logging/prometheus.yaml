@@ -16,7 +16,7 @@ scrape_configs:
     kubernetes_sd_configs:
       - role: pod
     relabel_configs:
-      - source_labels: [__meta_kubernetes_pod_label_app]
+      - source_labels: [kubernetes_pod_lable_add_here]
         action: keep
         regex: backend
     scrape_interval: 10s
@@ -26,7 +26,7 @@ scrape_configs:
     kubernetes_sd_configs:
       - role: pod
     relabel_configs:
-      - source_labels: [__meta_kubernetes_pod_label_app]
+      - source_labels: [mangoDB_pod_lable_here]
         action: keep
         regex: mongodb
     scrape_interval: 15s
@@ -36,7 +36,7 @@ scrape_configs:
     kubernetes_sd_configs:
       - role: pod
     relabel_configs:
-      - source_labels: [__meta_kubernetes_pod_label_app]
+      - source_labels: [rabbitMQ_pod_lable_goes_here]
         action: keep
         regex: rabbitmq
     scrape_interval: 15s
