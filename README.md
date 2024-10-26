@@ -33,54 +33,67 @@ This repository contains the Kubernetes manifests and deployment steps for an e-
 -  create kubernetes manifest file for each component and apply them.
  
 #### Step 1: Frontend (Nginx + React)
-- Kubernetes front-end deployment had been defined in the **"front-end-deployment.yaml"**
+- Kubernetes front-end deployment had been defined in the **Atlan-project/kubernetes/frontend**
 - Apply the manifest:
 
         kubectl apply -f frontend-deployment.yaml
 
-- Front-end service has been defined in **front-end-service.yaml**
+- Front-end service has been defined in **Atlan-project/kubernetes/frontend**
 
 - Apply the service-manifest:
 
-        kubectl apply -f front-end-service.yaml
+        kubectl apply -f frontend-service.yaml
 
-- Front-end config-maps has been defined in front-end-configMaps.yaml file
+- Front-end config-maps has been defined in **Atlan-project/kubernetes/frontend**
 - Apply front-end-configMap.yaml
 
-        kubectl apply -f front-end-configMap.yaml
+        kubectl apply -f frontend-configMap.yaml
 
 #### Step 2: Backend (Node.js microservices)
-- Back-end deployment has been defined in **"back-end-deployment.yaml"**
+- Back-end deployment has been defined in **Atlan-project/kubernetes/backend**
 - Apply the back-end-manifest:
 
-        kubectl apply -f back-end-deployment.yaml
+        kubectl apply -f backend-deployment.yaml
 
-- Back-end service has been defined in **"back-end-service.yaml"**
+- Back-end service has been defined in **Atlan-project/kubernetes/backend**
 - Apply the back-end-service.yaml :
 
-        kubectl apply -f back-end-service.yaml
+        kubectl apply -f backend-service.yaml
 
-- Bront-end config-maps has been defined in backend-configmaps-secrets.yaml file
+- Bront-end config-maps has been defined in **Atlan-project/kubernetes/backend**
 - Apply backend-configmaps-secrets.yaml
 
     kubectl apply -f backend-configmaps-secrets.yaml
 
 #### Step 3: MongoDB
-- StatefulSet for MongoDB with Persistent Volumes for data persistence has been defined in statefulset-mangoDB.yaml file
+- StatefulSet for MongoDB with Persistent Volumes for data persistence has been defined in **Atlan-project/kubernetes/database**
 - Apply statefulset-mangoDB.yaml 
     
         kubectl apply -f statefulset-mangoDB.yaml
 
-- MongoDB service config is defined in mangoDB-service.yaml file
+- MongoDB service config is defined in **Atlan-project/kubernetes/database**
 - Apply mangoDB-service.yaml file
 
         kubectl appply -f mangoDB-service.yaml
 
 #### Step 4: RabbitMQ
-- Defined a Deployment and Service for RabbitMQ in rabbit-deployment-service.yaml file.
-- Apply rabbit-deployment-service.yaml file
+- Defined a Deployment for RabbitMQ in **Atlan-project/kubernetes/rabbitMQ**
+- Apply rabbit-deployment.yaml file
 
-        kubectl apply -f rabbit-deployment-service.yaml
+        kubectl apply -f rabbit-deployment.yaml
+
+  - Apply rabbit-service.yaml file
+ 
+        kubectl apply -f rabbit-service.yaml
+
+  - Apply rabbit-pv.yaml file
+
+        kubectl apply -f rabbit-pv.yaml
+
+  - Apply rabbit-pvc.yaml file
+ 
+        kubectl apply -f rabbit-pvc.yaml
+    
 
 ### 2. Networking
 Step 1: Install Nginx Ingress Controller
@@ -88,36 +101,17 @@ Step 1: Install Nginx Ingress Controller
 
         kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/cloud/deploy.yaml
 
-- this will create nginx-ingress controller in your cluster
+- Above link will get ingress-controller.yaml file 
 
 Step 2: Configure Nginx Ingress for front-end
-- Nginx-ingress configuration is defined in **ingress.yaml** file
+- Nginx-ingress configuration is defined in **Atlan-project/kubernetes/ingress** file
 
 - Apply ingress.yaml file:
 
         kubectl apply -f ingress.yaml
 
-### 3. Persistence
-- To ensure data persistence and resilience configured stateful-sets with MongoDB as database and configured PVC
-- Apply statefulset-mangoDB.yaml file
-
-        kubectl apply -f statefulset-mangoDB.yaml
-
-- Apply mangoDB-service.yaml file
-
-        kubectl apply -f mangoDB-service.yaml
-
-- RabbitMQ could use a PersistentVolumeClaim similarly for persistent queues.
-- Apply rabbit-deployment-service.yaml file:
-    
-        kubectl apply -f rabbit-deployment-service.yaml
   
-### 4. Security and Compliance
-
-step 1. Install Gatekeeper
-    - Run the following command to install Gatekeeper:
-
-            kubectl apply -f https://raw.githubusercontent.com/open-policy-agent/gatekeeper/master/deploy/gatekeeper.yaml
+### 3. Security and Compliance
 
 Step 1: Install Gatekeeper
         - Run the following command to install Gatekeeper:
@@ -127,21 +121,21 @@ Step 1: Install Gatekeeper
 Step 2: Create Security Policies with Gatekeeper
 
     1: Enforcing Non-Root User Policy
-        - config file is under gatekeeper "kubernetes/gatekeeper/Enforcing Non-Root User Policy"
+        - config file is under gatekeeper "kubernetes/gatekeeper/enforcing-non-root-user-policy"
         - Apply both 'non-root-user-enforcement.yaml' & 'non-root-user-template.yaml' files
 
             kubectl apply -f non-root-user-template.yaml
             kubectl apply -f non-root-user-enforcement.yaml
 
     2: Deny Privileged Containers
-        - config file is under gatekeeper "kubernetes/gatekeeper/Deny Privileged Containers"
-        - Apply both 'privileged-container-template.yaml' & 'deny-privileged-containers.yaml' files
+        - config file is under gatekeeper "kubernetes/gatekeeper/deny-privileged-containers"
+        - Apply both 'privileged-c-constraints.yaml' & 'privileged-enforcer.yaml' files
 
-            kubectl apply -f privileged-container-template.yaml
-            Kubectl apply -f deny-privileged-containers.yaml
+            kubectl apply -f privileged-c-constraints.yaml
+            Kubectl apply -f privileged-enforcer.yaml
 
     3: Disable Privilege Escalation
-        - config file is under gatekeeper "kubernetes/gatekeeper/Disable Privilege Escalation"
+        - config file is under gatekeeper "kubernetes/gatekeeper/disable-privilege-escalation"
         - Apply both 'no-allow-privilege-escalation-template.yaml' & 'deny-privilege-escalation.yaml' files
 
             kubectl apply -f no-allow-privilege-escalation-template.yaml
@@ -232,7 +226,7 @@ Step 2: Install Kibana
 
         helm install kibana elastic/kibana --namespace logging
 
-- Kibana config file is in monitoring-logging/kibana
+- Kibana config file is in **Atlan-project/monitoring-logging/**
 - Apply the config file
 
         kubectl apply -f kibana-lb.yaml
@@ -247,7 +241,7 @@ Step 3: Install Logstash
 
 - Configure Logstash Pipeline
         - Create a ConfigMap to define the Logstash pipeline
-        - Apply the ConfigMap: monitoring-logging/logstash-pipeline-configmap.yaml
+        - Apply the ConfigMap: **Atlan-project/monitoring-logging/logstash-pipeline-configmap.yaml**
 
                 kubectl apply -f logstash-pipeline-configmap.yaml
 
@@ -278,7 +272,7 @@ Step 4: Install Filebeat for Log Collection: (collect logs from Kubernetes pods 
 
         helm install filebeat elastic/filebeat --namespace logging
 
-- Filebeat config file is in monitoring-logging/filebeat-config.yaml
+- Filebeat config file is in **Atlan-project/monitoring-logging/filebeat-config.yaml**
 
 - Apply the ConfigMap
 
@@ -365,7 +359,7 @@ Step 2: Cluster Autoscaling
         helm install cluster-autoscaler autoscaler/cluster-autoscaler \ --namespace kube-system \ --set cloudProvider=aws
 
 2. Configure Cluster Autoscaler
-        - Cluster autoscaler config file is in Autoscaling/cluster-autoscaler-deployment.yaml
+        - Cluster autoscaler config file is in **Atlan-pproject/Autoscaling/cluster-autoscaler-deployment.yaml**
         - Apply the Autoscaling/cluster-autoscaler-deployment.yaml
 
                 kubectl apply -f Autoscaling/cluster-autoscaler-deployment.yaml
