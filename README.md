@@ -1,7 +1,6 @@
 # Atlan-Project
 
 
-![diagram-export-10-25-2024-8_55_10-PM](https://github.com/user-attachments/assets/154d25f2-9d41-4f04-b4ba-398bca34f2ce)
 
 
 
